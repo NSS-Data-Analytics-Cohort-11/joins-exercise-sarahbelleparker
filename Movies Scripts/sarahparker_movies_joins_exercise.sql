@@ -56,12 +56,12 @@ GROUP BY company_name;
 
 
 --Question 5. Write a query that returns the five distributors with the highest average movie budget.
-SELECT company_name, AVG(worldwide_gross)
+SELECT company_name, AVG(film_budget)
 FROM distributors
 	INNER JOIN specs ON distributors.distributor_id = specs.domestic_distributor_id
 	INNER JOIN revenue ON specs.movie_id = revenue.movie_id
 GROUP BY company_name
-ORDER BY AVG(worldwide_gross) DESC
+ORDER BY AVG(film_budget) DESC
 LIMIT 5;
 
 
@@ -85,5 +85,16 @@ SELECT AVG(imdb_rating)
 FROM specs
 INNER JOIN rating ON rating.movie_id = specs.movie_id
 WHERE length_in_min > 120;
+
+--or
+SELECT CASE
+WHEN length_in_min >= 120 THEN '>2 Hours'
+	ELSE '<2 Hours'
+END AS lengthtext, ROUND(avg(imdb_rating), 2) AS avg_rating
+FROM specs
+INNER JOIN rating
+USING (movie_id)
+GROUP BY lengthtext
+ORDER BY avg_rating DESC;
 
 --answer: Movies that are over two hours long have a higher average IMDB rating.
